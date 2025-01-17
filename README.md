@@ -3,11 +3,10 @@ This library is a class that lets an esp32 communicate with Adafruit IO through 
 
 **This library is dependant on the `umqtt.simple` library**
 
-# How to use
+# How to use (Look at the AIO_ESP32_Test file for an example)
 1. Import the class
 2. Import `MQTTClient` from `umqtt.simple`
-3. Make some variable equal `AIO_ESP(*your wifi name*,*your wifi password*,*your aio username*,*your aio key*)` 
-Look at the AIO_ESP32_Test file for an example
+3. Make some variable equal `AIO_ESP(*your wifi name*,*your wifi password*,*your aio username*,*your aio key*)`
 
 # Functions
 * `connect_to_internet` - Connects the esp32 to your wifi (must either be dual band or be 2.4GHz from what I've seen) and to your aio account
