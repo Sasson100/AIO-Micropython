@@ -60,6 +60,11 @@ class AIO_ESP:
     def read_feed(self):
         def check_messages():
             while True:
-                self.client.check_msg()
+                try:
+                    self.client.check_msg()
+                    time.sleep(0.1)
+                except Exception as e:
+                    print(f'Reading feeds failed with the error:')
+                    print(f'{type(e).__name__}: {e}')
         _thread.start_new_thread(check_messages,())
-        _thread.start_new_thread(check_messages,())
+
