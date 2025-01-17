@@ -31,24 +31,14 @@ class AIO_ESP:
         self.client = MQTTClient(self.CLIENT_ID,self.BROKER, user=self.aio_username, password=self.aio_key,keepalive=60)
         def def_callback(topic,msg):
             feed_name=topic.decode('utf-8').split("/")[-1]
-            print(f"Received message on {feed_name}: {msg.decode('utf-8')}")
+            print(f'Received message on the feed {feed_name}: {msg.decode("utf-8")}')
             if feed_name in self.callbacks:
-                self.callbacks[feed_name](topic,msg)
+                self.callbacks[feed_name](msg.decode('utf-8'))
             else:
                 print(f'No callback registered for feed "{feed_name}"')
         self.client.set_callback(def_callback)  # Set the callback for received messages
         self.client.connect()
         print("Connected to Adafruit IO!")
-
-    def register_callback(self,feed_name,callback):
-        self.callbacks[feed_name]=callback
-        print(f'Callback registered for feed "{feed_name}"')
-
-    def write_feed(self,feed_name,msg):
-        if self.client:
-            self.client.publish(f'{self.aio_username}/feeds/{feed_name}',str(msg))
-        else:
-            print("Error: Not connected to Adafruit IO")
     
     def subscribe_feed(self,feed_name):
         if self.client:
@@ -56,8 +46,20 @@ class AIO_ESP:
             print(f'Subscribed to {feed_name}')
         else:
             print("Erro: Not connected to Adafruit IO")
+
+    def register_callback(self,feed_name:str,callback):
+        self.callbacks[feed_name]=callback
+        print(f'Callback function {callback.__name__} registered to feed {feed_name}')
+
+    def write_feed(self,feed_name,msg):
+        if self.client:
+            self.client.publish(f'{self.aio_username}/feeds/{feed_name}',str(msg))
+        else:
+            print("Error: Not connected to Adafruit IO")
+    
     def read_feed(self):
         def check_messages():
             while True:
                 self.client.check_msg()
+        _thread.start_new_thread(check_messages,())
         _thread.start_new_thread(check_messages,())
