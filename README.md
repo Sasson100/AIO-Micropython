@@ -1,12 +1,12 @@
-# AIO-ESP32-Micropython
-This library is a class that lets an esp32 communicate with Adafruit IO through Micropython, it might work with other microprocessors that use Micropython and have wifi, but I haven't tested that
+# AIO-Micropython
+This library is a class that lets microprocessors that use Micropython (and have a wifi chip) communicate with Adafruit IO
 
 **This library is dependant on the `umqtt.simple` library**
 
-# How to use (Look at AIO_ESP32_Test.py for an example)
+# How to use (Look at AIO_Micropython_Test.py for an example)
 1. Import the class
 2. Import `MQTTClient` from `umqtt.simple`
-3. Make some variable equal `AIO_ESP(*your wifi name*,*your wifi password*,*your aio username*,*your aio key*)`
+3. Make some variable equal `AIO_ESP(*your wifi name*,*your wifi password*,*your aio username*,*your aio key*,*client id name (default set to ESP32)*)`
 
 # Functions
 * `connect_to_internet` - Connects the esp32 to your wifi (must either be dual band or be 2.4GHz from what I've seen) and to your aio account
