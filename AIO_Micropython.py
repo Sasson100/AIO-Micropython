@@ -4,7 +4,7 @@ from umqtt.simple import MQTTClient
 import _thread
 
 class AIO_MP:
-    def __init__(self,ssid,password,aio_username,aio_key):
+    def __init__(self,ssid,password,aio_username,aio_key,client_id="ESP32"):
         # Wifi credentials
         self.ssid=ssid
         self.password=password
@@ -12,9 +12,10 @@ class AIO_MP:
         self.aio_username=aio_username
         self.aio_key=aio_key
         # MQTT client settings
-        self.BROKER = "io.adafruit.com"
-        self.CLIENT_ID = "ESP32"
+        self.BROKER="io.adafruit.com"
+        self.CLIENT_ID=client_id
         self.callbacks={}
+        self.throttle=0
     
     def connect_to_internet(self):
         # Connecting to wifi
@@ -31,12 +32,24 @@ class AIO_MP:
         self.client = MQTTClient(self.CLIENT_ID,self.BROKER, user=self.aio_username, password=self.aio_key)
         def def_callback(topic,msg):
             feed_name=topic.decode('utf-8').split("/")[-1]
+            message=msg.decode('utf-8')
             if feed_name is "throttle":
-                print("The data rate has been reached, please lower your feed writes per minute")
+                l=message.replace(f'{self.aio_username} ','')
+                for char in l:
+                    if not char.isdigit():
+                        l=l.replace(char,'')
+                print(f'You have reached the data rate limit, going to sleep for {l} seconds')
+                self.throttle=1
+                time.sleep(int(l)+1)
+                print("Throttle has stopped")
+                self.throttle=0
+            elif feed_name is "error":
+                print("There was an error:")
+                print(message)
             else:
-                print(f'Received message on the feed {feed_name}: {msg.decode("utf-8")}')
+                print(f'Received message on the feed {feed_name}: {message}')
                 if feed_name in self.callbacks:
-                    self.callbacks[feed_name](msg.decode('utf-8'))
+                    self.callbacks[feed_name](message)
                 else:
                     print(f'No callback registered for feed "{feed_name}"')
         self.client.set_callback(def_callback)  # Set the callback for received messages
@@ -65,12 +78,12 @@ class AIO_MP:
     def read_feed(self):
         def check_messages():
             while True:
-                try:
-                    self.client.check_msg()
-                    time.sleep(0.1)
-                except Exception as e:
-                    print(f'Reading feeds failed with the error:')
-                    print(f'{type(e).__name__}: {e}')
-                    time.sleep(5)
+                if self.throttle==0:
+                    try:
+                        self.client.check_msg()
+                        time.sleep(0.1)
+                    except Exception as e:
+                        print(f'Reading feeds failed with the error:')
+                        print(f'{type(e).__name__}: {e}')
+                        time.sleep(5)
         _thread.start_new_thread(check_messages,())
-
