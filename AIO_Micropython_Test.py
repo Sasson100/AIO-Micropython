@@ -1,10 +1,10 @@
-from AIO_ESP32 import AIO_ESP
+from AIO_Micropython import AIO_MP
 from machine import Pin
 wifi_ssid='*wifi name*'
 wifi_password='*wifi password'
 aio_username='*aio username*'
 aio_key='*aio key*'
-aio=AIO_ESP(wifi_ssid,wifi_password,aio_username,aio_key)
+aio=AIO_MP(wifi_ssid,wifi_password,aio_username,aio_key)
 
 
 aio.connect_to_internet()
