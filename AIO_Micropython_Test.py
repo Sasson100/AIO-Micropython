@@ -4,7 +4,8 @@ wifi_ssid='*wifi name*'
 wifi_password='*wifi password'
 aio_username='*aio username*'
 aio_key='*aio key*'
-aio=AIO_MP(wifi_ssid,wifi_password,aio_username,aio_key)
+client_id='*client id, name it whatever you want*' # this is optional
+aio=AIO_MP(wifi_ssid,wifi_password,aio_username,aio_key,client_id)
 
 
 aio.connect_to_internet()
