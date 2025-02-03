@@ -1,7 +1,8 @@
+# this test uses the ESP32 led for the led_callback function, change the pin that is switched in it to change it to your microprocessor
 from AIO_Micropython import AIO_MP
 from machine import Pin
 wifi_ssid='*wifi name*'
-wifi_password='*wifi password'
+wifi_password='*wifi password*'
 aio_username='*aio username*'
 aio_key='*aio key*'
 client_id='*client id, name it whatever you want*' # this is optional
