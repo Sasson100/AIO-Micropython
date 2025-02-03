@@ -3,7 +3,7 @@ import time
 from umqtt.simple import MQTTClient
 import _thread
 
-class AIO_ESP:
+class AIO_MP:
     def __init__(self,ssid,password,aio_username,aio_key):
         # Wifi credentials
         self.ssid=ssid
